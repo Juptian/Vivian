@@ -921,9 +921,9 @@ namespace Vivian.CodeAnalysis.Binding
 
                     if (syntax.OperatorToken.Kind != SyntaxKind.EqualsToken)
                     {
-                        var equivalentOperatorTokenKind = SyntaxFacts.GetBinaryOperatorOfAssignmentOperator(syntax.OperatorToken.Kind);
-                        var boundAssignOperator = BoundBinaryOperator.Bind(equivalentOperatorTokenKind, variable.Type, boundRight.Type);
                         var operatorToken = syntax.OperatorToken;
+                        var equivalentOperatorTokenKind = SyntaxFacts.GetBinaryOperatorOfAssignmentOperator(operatorToken.Kind);
+                        var boundAssignOperator = BoundBinaryOperator.Bind(equivalentOperatorTokenKind, variable.Type, boundRight.Type);
 
                         if (boundAssignOperator == null)
                         {
