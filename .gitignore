@@ -13,28 +13,24 @@ artifacts
 
 # Vivian
 src/Vivian/bin
-src/Vivian/obj
+
 src/Vivian/.VSCodeCounter
 
 # Vivian Compiler
 src/Vivian.Compiler/bin
-src/Vivian.Compiler/obj
 src/Vivian.Compiler/.VSCodeCounter
 
 # Vivian Tools
 src/Vivian.Tools/bin
-src/Vivian.Tools/obj
 src/Vivian.Tools/.VSCodeCounter
 src/Vivian.Tools/TestResults
 
 # Vivian Tests
 src/Vivian.Tests/bin
-src/Vivian.Tests/obj
 src/Vivian.Tests/.VSCodeCounter
 
 # Vivian Installer
 src/Vivian.Installer/bin
-src/Vivian.Installer/obj
 src/Vivian.Installer/.VSCodeCounter
 *.json
 *.cache
