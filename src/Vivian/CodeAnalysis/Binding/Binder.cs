@@ -953,10 +953,10 @@ namespace Vivian.CodeAnalysis.Binding
 
                     if (syntax.OperatorToken.Kind != SyntaxKind.EqualsToken)
                     {
+                        var operatorToken = syntax.OperatorToken;
                         var equivalentOperatorTokenKind = SyntaxFacts.GetBinaryOperatorOfAssignmentOperator(operatorToken.Kind);
                         var boundAssignOperator = BoundBinaryOperator.Bind(equivalentOperatorTokenKind, member.Type, boundRight.Type);
-                        var operatorToken = syntax.OperatorToken;
-
+                       
                         if (boundAssignOperator == null)
                         {
                             Diagnostics.ReportUndefinedBinaryOperator(operatorToken.Location, operatorToken.Text, member.Type, boundRight.Type);
