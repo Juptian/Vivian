@@ -291,13 +291,13 @@ namespace Vivian.CodeAnalysis.Syntax
 
         public static bool IsAssignmentOperator(this SyntaxKind kind)
         {
-            return kind == SyntaxKind.PlusEqualsToken ||
-                   kind == SyntaxKind.MinusEqualsToken || 
-                   kind == SyntaxKind.StarEqualsToken || 
-                   kind == SyntaxKind.SlashEqualsToken || 
+            return kind == SyntaxKind.PlusEqualsToken      ||
+                   kind == SyntaxKind.MinusEqualsToken     || 
+                   kind == SyntaxKind.StarEqualsToken      || 
+                   kind == SyntaxKind.SlashEqualsToken     || 
                    kind == SyntaxKind.AmpersandEqualsToken || 
-                   kind == SyntaxKind.PipeEqualsToken ||
-                   kind == SyntaxKind.HatEqualsToken || 
+                   kind == SyntaxKind.PipeEqualsToken      ||
+                   kind == SyntaxKind.HatEqualsToken       || 
                    kind == SyntaxKind.EqualsToken;
         }
 

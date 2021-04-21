@@ -2,7 +2,7 @@
 
 namespace Vivian.Tools
 {
-    public static class DirectoryExtensions
+    public static class Extensions
     {
         public static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
         {

@@ -473,20 +473,28 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\ashle\\.nuget\\packages\\": {}
+    "C:\\Users\\13439\\.nuget\\packages\\": {},
+    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
+    "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Vivian\\Vivian\\src\\Vivian.Installer\\Vivian.Installer.csproj",
+      "projectUniqueName": "D:\\Github Repos\\Vivian\\src\\Vivian.Installer\\Vivian.Installer.csproj",
       "projectName": "Vivian.Installer",
-      "projectPath": "D:\\Vivian\\Vivian\\src\\Vivian.Installer\\Vivian.Installer.csproj",
-      "packagesPath": "C:\\Users\\ashle\\.nuget\\packages\\",
-      "outputPath": "D:\\Vivian\\Vivian\\src\\Vivian.Installer\\obj\\",
+      "projectPath": "D:\\Github Repos\\Vivian\\src\\Vivian.Installer\\Vivian.Installer.csproj",
+      "packagesPath": "C:\\Users\\13439\\.nuget\\packages\\",
+      "outputPath": "D:\\Github Repos\\Vivian\\src\\Vivian.Installer\\obj\\",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+        "C:\\Program Files (x86)\\Microsoft\\Xamarin\\NuGet\\"
+      ],
       "configFilePaths": [
-        "C:\\Users\\ashle\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\13439\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
       ],
       "originalTargetFrameworks": [
         "net5.0"
@@ -499,8 +507,8 @@
         "net5.0": {
           "targetAlias": "net5.0",
           "projectReferences": {
-            "D:\\Vivian\\Vivian\\src\\Vivian.Tools\\Vivian.Tools.csproj": {
-              "projectPath": "D:\\Vivian\\Vivian\\src\\Vivian.Tools\\Vivian.Tools.csproj"
+            "D:\\Github Repos\\Vivian\\src\\Vivian.Tools\\Vivian.Tools.csproj": {
+              "projectPath": "D:\\Github Repos\\Vivian\\src\\Vivian.Tools\\Vivian.Tools.csproj"
             }
           }
         }
@@ -533,15 +541,15 @@
         "downloadDependencies": [
           {
             "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
-            "version": "[5.0.3, 5.0.3]"
+            "version": "[5.0.5, 5.0.5]"
           },
           {
             "name": "Microsoft.NETCore.App.Runtime.win-x64",
-            "version": "[5.0.3, 5.0.3]"
+            "version": "[5.0.5, 5.0.5]"
           },
           {
             "name": "Microsoft.WindowsDesktop.App.Runtime.win-x64",
-            "version": "[5.0.3, 5.0.3]"
+            "version": "[5.0.5, 5.0.5]"
           }
         ],
         "frameworkReferences": {
@@ -549,7 +557,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.200\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
       }
     },
     "runtimes": {

@@ -5,6 +5,12 @@
 src/Vivian.sln.DotSettings.user
 artifacts
 
+#Avoiding jups personal things
+*.json
+*.cache
+*.props
+*.dll
+
 # Vivian
 src/Vivian/bin
 src/Vivian/obj
@@ -30,3 +36,10 @@ src/Vivian.Tests/.VSCodeCounter
 src/Vivian.Installer/bin
 src/Vivian.Installer/obj
 src/Vivian.Installer/.VSCodeCounter
+*.json
+*.cache
+*.json
+*.json
+*.props
+.vs/Vivian/v16/.suo
+*.v2

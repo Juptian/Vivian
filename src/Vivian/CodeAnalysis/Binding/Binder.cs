@@ -102,7 +102,7 @@ namespace Vivian.CodeAnalysis.Binding
             // Check for main/script with global statements
             var functions = binder._scope.GetDeclaredFunctions();
 
-            FunctionSymbol? mainFunction = functions.FirstOrDefault(f => f.Name == "Main");
+            var mainFunction = functions.FirstOrDefault(f => f.Name == "Main");
             
             FunctionSymbol? scriptFunction = null;
 
@@ -489,53 +489,7 @@ namespace Vivian.CodeAnalysis.Binding
                 if (initializer is BoundLiteralExpression ble && variableType.IsNumeric && ble.Type != variableType)
                 {
                     // Check for over/underflows and adjust type
-                    object? newValue = null;
-
-                    if (variableType == TypeSymbol.Int8)
-                    {
-                        newValue = Convert.ToSByte(ble.Value);
-                    }
-                    else if (variableType == TypeSymbol.Int16)
-                    {
-                        newValue = Convert.ToInt16(ble.Value);
-                    }
-                    else if (variableType == TypeSymbol.Int32)
-                    {
-                        newValue = Convert.ToInt32(ble.Value);
-                    }
-                    else if (variableType == TypeSymbol.Int64)
-                    {
-                        newValue = Convert.ToInt64(ble.Value);
-                    }
-                    else if (variableType == TypeSymbol.UInt8)
-                    {
-                        newValue = Convert.ToByte(ble.Value);
-                    }
-                    else if (variableType == TypeSymbol.UInt16)
-                    {
-                        newValue = Convert.ToUInt16(ble.Value);
-                    }
-                    else if (variableType == TypeSymbol.UInt32)
-                    {
-                        newValue = Convert.ToUInt32(ble.Value);
-                    }
-                    else if (variableType == TypeSymbol.UInt64)
-                    {
-                        newValue = Convert.ToUInt64(ble.Value);
-                    }
-                    else if (variableType == TypeSymbol.Float32)
-                    {
-                        newValue = Convert.ToSingle(ble.Value);
-                    }
-                    else if (variableType == TypeSymbol.Float64)
-                    {
-                        newValue = Convert.ToDouble(ble.Value);
-                    }
-                    else if (variableType == TypeSymbol.Decimal)
-                    {
-                        newValue = Convert.ToDecimal(ble.Value);
-                    }
-
+                    AdjustType(ble, variableType, out object? newValue);
                     initializer = new BoundLiteralExpression(syntax.Initializer, newValue);
                 }
 
@@ -588,11 +542,52 @@ namespace Vivian.CodeAnalysis.Binding
             if (type is ClassSymbol s)
             {
                 // Class types default to calling their empty constructor
-                var ctorSyntaxToken = new NameExpressionSyntax(syntax.SyntaxTree, new SyntaxToken(syntax.SyntaxTree, SyntaxKind.IdentifierToken, syntax.Span.End, s.Name, null, ImmutableArray<SyntaxTrivia>.Empty, ImmutableArray<SyntaxTrivia>.Empty));
-                var openParenToken = new SyntaxToken(syntax.SyntaxTree, SyntaxKind.OpenParenthesisToken, syntax.Span.End, "(", null, ImmutableArray<SyntaxTrivia>.Empty, ImmutableArray<SyntaxTrivia>.Empty);
-                var closeParenToken = new SyntaxToken(syntax.SyntaxTree, SyntaxKind.CloseParenthesisToken, syntax.Span.End, ")", null, ImmutableArray<SyntaxTrivia>.Empty, ImmutableArray<SyntaxTrivia>.Empty);
+                var ctorSyntaxToken = new NameExpressionSyntax
+                (
+                    syntax.SyntaxTree, 
+                    new SyntaxToken
+                    (
+                        syntax.SyntaxTree, 
+                        SyntaxKind.IdentifierToken, 
+                        syntax.Span.End, 
+                        s.Name, 
+                        null, 
+                        ImmutableArray<SyntaxTrivia>.Empty, 
+                        ImmutableArray<SyntaxTrivia>.Empty
+                    )
+                );
+                var openParenToken = new SyntaxToken
+                (
+                    syntax.SyntaxTree, 
+                    SyntaxKind.OpenParenthesisToken, 
+                    syntax.Span.End, 
+                    "(", 
+                    null, 
+                    ImmutableArray<SyntaxTrivia>.Empty, 
+                    ImmutableArray<SyntaxTrivia>.Empty
+                );
+                var closeParenToken = new SyntaxToken
+                (
+                    syntax.SyntaxTree, 
+                    SyntaxKind.CloseParenthesisToken, 
+                    syntax.Span.End, 
+                    ")", 
+                    null, 
+                    ImmutableArray<SyntaxTrivia>.Empty, 
+                    ImmutableArray<SyntaxTrivia>.Empty
+                );
 
-                return BindCallExpression(new CallExpressionSyntax(syntax.SyntaxTree, ctorSyntaxToken, openParenToken, new SeparatedSyntaxList<ExpressionSyntax>(ImmutableArray<SyntaxNode>.Empty), closeParenToken));
+                return BindCallExpression
+                (
+                    new CallExpressionSyntax
+                    (
+                        syntax.SyntaxTree, 
+                        ctorSyntaxToken, 
+                        openParenToken, 
+                        new SeparatedSyntaxList<ExpressionSyntax>(ImmutableArray<SyntaxNode>.Empty), 
+                        closeParenToken
+                    )
+                );
             }
 
             return new BoundLiteralExpression(syntax, type?.DefaultValue);
@@ -921,24 +916,25 @@ namespace Vivian.CodeAnalysis.Binding
                     {
                         Diagnostics.ReportCannotAssign(syntax.OperatorToken.Location, variable.Variable.Name);
                     }
+                    //Declared ahead of time because it's the same in both parts of the if/else
+                    var convertedExpression = BindConversion(syntax.Right.Location, boundRight, variable.Type);
 
                     if (syntax.OperatorToken.Kind != SyntaxKind.EqualsToken)
                     {
                         var equivalentOperatorTokenKind = SyntaxFacts.GetBinaryOperatorOfAssignmentOperator(syntax.OperatorToken.Kind);
                         var boundAssignOperator = BoundBinaryOperator.Bind(equivalentOperatorTokenKind, variable.Type, boundRight.Type);
+                        var operatorToken = syntax.OperatorToken;
 
                         if (boundAssignOperator == null)
                         {
-                            Diagnostics.ReportUndefinedBinaryOperator(syntax.OperatorToken.Location, syntax.OperatorToken.Text, variable.Type, boundRight.Type);
+                            Diagnostics.ReportUndefinedBinaryOperator(operatorToken.Location, operatorToken.Text, variable.Type, boundRight.Type);
                             return new BoundErrorExpression(syntax);
                         }
 
-                        var convertedExpression = BindConversion(syntax.Right.Location, boundRight, variable.Type);
                         return new BoundCompoundAssignmentExpression(syntax, variable.Variable, boundAssignOperator, convertedExpression);
                     }
                     else
                     {
-                        var convertedExpression = BindConversion(syntax.Right.Location, boundRight, variable.Type);
                         return new BoundAssignmentExpression(syntax, variable.Variable, convertedExpression);
                     }
                 }
@@ -950,24 +946,28 @@ namespace Vivian.CodeAnalysis.Binding
                         Diagnostics.ReportCannotAssign(syntax.OperatorToken.Location, field.StructMember.Name);
                     }
 
+                    //Declared ahead of time because it's the same in both parts of the if/else
+                    var convertedExpression = BindConversion(syntax.Right.Location, boundRight, field.Type);
+                    var member = field.StructMember;
+                    var instance = field.StructInstance;
+
                     if (syntax.OperatorToken.Kind != SyntaxKind.EqualsToken)
                     {
-                        var equivalentOperatorTokenKind = SyntaxFacts.GetBinaryOperatorOfAssignmentOperator(syntax.OperatorToken.Kind);
-                        var boundAssignOperator = BoundBinaryOperator.Bind(equivalentOperatorTokenKind, field.StructMember.Type, boundRight.Type);
+                        var equivalentOperatorTokenKind = SyntaxFacts.GetBinaryOperatorOfAssignmentOperator(operatorToken.Kind);
+                        var boundAssignOperator = BoundBinaryOperator.Bind(equivalentOperatorTokenKind, member.Type, boundRight.Type);
+                        var operatorToken = syntax.OperatorToken;
 
                         if (boundAssignOperator == null)
                         {
-                            Diagnostics.ReportUndefinedBinaryOperator(syntax.OperatorToken.Location, syntax.OperatorToken.Text, field.StructMember.Type, boundRight.Type);
+                            Diagnostics.ReportUndefinedBinaryOperator(operatorToken.Location, operatorToken.Text, member.Type, boundRight.Type);
                             return new BoundErrorExpression(syntax);
                         }
 
-                        var convertedExpression = BindConversion(syntax.Right.Location, boundRight, field.Type);
-                        return new BoundCompoundFieldAssignmentExpression(syntax, field.StructInstance, field.StructMember, boundAssignOperator, convertedExpression);
+                        return new BoundCompoundFieldAssignmentExpression(syntax, instance, member, boundAssignOperator, convertedExpression);
                     }
                     else
                     {
-                        var convertedExpression = BindConversion(syntax.Right.Location, boundRight, field.Type);
-                        return new BoundFieldAssignmentExpression(syntax, field.StructInstance, field.StructMember, convertedExpression);
+                        return new BoundFieldAssignmentExpression(syntax, instance, member, convertedExpression);
                     }
                 }
 
@@ -1354,6 +1354,67 @@ namespace Vivian.CodeAnalysis.Binding
                     Diagnostics.ReportNotAVariable(identifierToken.Location, name);
                     return null;
             }
+        }
+
+        private static void AdjustType(BoundLiteralExpression boundLiteral, TypeSymbol? variableType, out object? result)
+        {
+            // Check for over/underflows and adjust type
+            if (variableType == TypeSymbol.Int8)
+            {
+                result = Convert.ToSByte(boundLiteral.Value);
+                return;
+            }
+            else if (variableType == TypeSymbol.Int16)
+            {
+                result = Convert.ToInt16(boundLiteral.Value);
+                return;
+            }
+            else if (variableType == TypeSymbol.Int32)
+            {
+                result = Convert.ToInt32(boundLiteral.Value);
+                return;
+            }
+            else if (variableType == TypeSymbol.Int64)
+            {
+                result = Convert.ToInt64(boundLiteral.Value);
+                return;
+            }
+            else if (variableType == TypeSymbol.UInt8)
+            {
+                result = Convert.ToByte(boundLiteral.Value);
+                return;
+            }
+            else if (variableType == TypeSymbol.UInt16)
+            {
+                result = Convert.ToUInt16(boundLiteral.Value);
+                return;
+            }
+            else if (variableType == TypeSymbol.UInt32)
+            {
+                result = Convert.ToUInt32(boundLiteral.Value);
+                return;
+            }
+            else if (variableType == TypeSymbol.UInt64)
+            {
+                result = Convert.ToUInt64(boundLiteral.Value);
+                return;
+            }
+            else if (variableType == TypeSymbol.Float32)
+            {
+                result = Convert.ToSingle(boundLiteral.Value);
+                return;
+            }
+            else if (variableType == TypeSymbol.Float64)
+            {
+                result = Convert.ToDouble(boundLiteral.Value);
+                return;
+            }
+            else if (variableType == TypeSymbol.Decimal)
+            {
+                result = Convert.ToDecimal(boundLiteral.Value);
+                return;
+            }
+            result = null;
         }
 
         private TypeSymbol? LookupType(string name)
